@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Booking System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Table Booking System</h1>
+    <div id="auth-forms">
+        <form id="register-form">
+            <h2>Register</h2>
+            <input type="text" id="register-name" placeholder="Name" required>
+            <input type="email" id="register-email" placeholder="Email" required>
+            <input type="password" id="register-password" placeholder="Password" required>
+            <button type="submit">Register</button>
+        </form>
+        
+        <form id="login-form">
+            <h2>Login</h2>
+            <input type="email" id="login-email" placeholder="Email" required>
+            <input type="password" id="login-password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+    
+    <div id="reservation-forms" style="display:none;">
+        <button id="logout-button">Logout</button>
+        <div id="current-reservation" style="display:none;">
+            <h2>Your Reservation</h2>
+            <p id="reservation-details"></p>
+            <button id="cancel-reservation-button">Cancel Reservation</button>
+        </div>
+        
+        <form id="reservation-form">
+            <h2>Make a Reservation</h2>
+            <select id="table-id"></select>
+            <input type="datetime-local" id="reservation-date" required>
+            <button type="submit">Reserve</button>
+        </form>
+    </div>
+    
+    <div id="notification-container"></div>
+    
+    <div id="message"></div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
