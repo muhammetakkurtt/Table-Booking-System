@@ -4,31 +4,39 @@ exports.makeReservation = (req, res) => {
   const { table_id, reservation_date } = req.body;
   const user_id = req.userId;
 
+  const selectedDate = new Date(reservation_date);
+  const currentDate = new Date();
+
+  if (selectedDate < currentDate) {
+      return res.status(400).send('Cannot make a reservation for a past date');
+  }
+
   db.query('SELECT * FROM reservations WHERE user_id = ?', [user_id], (err, results) => {
-    if (err) throw err;
-
-    if (results.length > 0) {
-      return res.status(400).send('You already have a reservation');
-    }
-
-    db.query('SELECT * FROM tables WHERE id = ? AND status = "available"', [table_id], (err, results) => {
       if (err) throw err;
 
-      if (results.length === 0) {
-        return res.status(400).send('Table is not available');
+      if (results.length > 0) {
+          return res.status(400).send('You already have a reservation');
       }
 
-      db.query('INSERT INTO reservations (user_id, table_id, reservation_date) VALUES (?, ?, ?)', [user_id, table_id, reservation_date], (err, result) => {
-        if (err) throw err;
-
-        db.query('UPDATE tables SET status = "occupied" WHERE id = ?', [table_id], (err, result) => {
+      db.query('SELECT * FROM tables WHERE id = ? AND status = "available"', [table_id], (err, results) => {
           if (err) throw err;
-          res.status(201).send('Reservation made successfully');
-        });
+
+          if (results.length === 0) {
+              return res.status(400).send('Table is not available');
+          }
+
+          db.query('INSERT INTO reservations (user_id, table_id, reservation_date) VALUES (?, ?, ?)', [user_id, table_id, reservation_date], (err, result) => {
+              if (err) throw err;
+
+              db.query('UPDATE tables SET status = "occupied" WHERE id = ?', [table_id], (err, result) => {
+                  if (err) throw err;
+                  res.status(201).send('Reservation made successfully');
+              });
+          });
       });
-    });
   });
 };
+
 
 exports.getUserReservations = (req, res) => {
   const user_id = req.userId;

@@ -115,6 +115,14 @@ document.getElementById('reservation-form').addEventListener('submit', async (e)
     e.preventDefault();
     const table_id = document.getElementById('table-id').value;
     const reservation_date = document.getElementById('reservation-date').value;
+    
+    const selectedDate = new Date(reservation_date);
+    const currentDate = new Date();
+
+    if (selectedDate < currentDate) {
+        showNotification('Cannot make a reservation for a past date', 'error');
+        return;
+    }
 
     const res = await fetch('/api/reservations', {
         method: 'POST',
@@ -134,6 +142,7 @@ document.getElementById('reservation-form').addEventListener('submit', async (e)
         showNotification(message, 'error');
     }
 });
+
 
 window.onload = () => {
     const token = localStorage.getItem('token');
