@@ -115,7 +115,8 @@ Follow the steps below to get the project working in your local environment:
       
 ## Usage
 
-- You can log in to the system by registering and logging in as a user.- Select the appropriate table and date to make a table reservation.
+- You can log in to the system by registering and logging in as a user.
+- Select the appropriate table and date to make a table reservation.
 - You can view and cancel your existing reservation.
 
 ## Live Demo
