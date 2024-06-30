@@ -117,3 +117,9 @@ Follow the steps below to get the project working in your local environment:
 
 - You can log in to the system by registering and logging in as a user.- Select the appropriate table and date to make a table reservation.
 - You can view and cancel your existing reservation.
+
+## Live Demo
+
+You can use the link below to test the application live. The application is hosted on an EC2 instance running on AWS. PM2 is used to manage and run Node.js in the background and Nginx is used to manage incoming requests and run the application through a proxy on Ubuntu 22.04.
+
+[Table Booking System Live Demo](http://13.51.197.141/)
