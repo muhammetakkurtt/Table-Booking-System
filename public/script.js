@@ -165,13 +165,19 @@ function showAuthForms() {
 function showNotification(message, type) {
     const notificationContainer = document.getElementById('notification-container');
     const notification = document.createElement('div');
-    notification.classList.add('notification', type);
+    notification.classList.add('p-4', 'rounded', 'shadow-lg', 'text-white', 'w-full', 'max-w-md', 'mx-auto', 'text-center', 'transition', 'duration-500');
+    
+    if (type === 'success') {
+        notification.classList.add('bg-green-500');
+    } else {
+        notification.classList.add('bg-red-500');
+    }
+    
     notification.innerText = message;
-
     notificationContainer.appendChild(notification);
-
+    
     setTimeout(() => {
-        notification.classList.add('fade-out');
+        notification.classList.add('opacity-0', 'translate-y-4');
         notification.addEventListener('transitionend', () => {
             notification.remove();
         });
