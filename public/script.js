@@ -95,21 +95,37 @@ async function loadUserReservation() {
 
     if (res.ok) {
         const reservations = await res.json();
-        if (reservations.length > 0) {
-            document.getElementById('current-reservation').style.display = 'block';
+        const currentReservationElement = document.getElementById('current-reservation');
+        const reservationDetailsElement = document.getElementById('reservation-details');
+        const cancelReservationButton = document.getElementById('cancel-reservation-button');
 
-            const reservationDate = new Date(reservations[0].reservation_date);
+        if (reservations.length > 0) {
+            const reservation = reservations[0];
+            const reservationDate = new Date(reservation.reservation_date);
+            const currentDate = new Date();
+
             const formattedDate = reservationDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
             const formattedTime = reservationDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 
-            document.getElementById('reservation-details').innerText = `Table ID: ${reservations[0].table_id}, Date: ${formattedDate}, Time: ${formattedTime}`;
+            reservationDetailsElement.innerText = `Table ID: ${reservation.table_id}, Date: ${formattedDate}, Time: ${formattedTime}`;
+
+            if (reservationDate < currentDate) {
+                cancelReservationButton.style.display = 'none';
+                reservationDetailsElement.innerText += `\nStatus: Past`;
+            } else {
+                cancelReservationButton.style.display = 'block';
+            }
+
+            currentReservationElement.style.display = 'block';
         } else {
-            document.getElementById('current-reservation').style.display = 'none';
+            currentReservationElement.style.display = 'none';
         }
+
         document.getElementById('reservation-form').style.display = 'block';
         loadTables();
     }
 }
+
 
 document.getElementById('reservation-form').addEventListener('submit', async (e) => {
     e.preventDefault();

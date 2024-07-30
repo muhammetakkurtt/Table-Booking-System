@@ -1,5 +1,23 @@
 const db = require('../config/config');
 
+exports.checkAndCancelPastReservations = () => {
+  const currentDate = new Date();
+
+  db.query('SELECT * FROM reservations WHERE reservation_date < ?', [currentDate], (err, results) => {
+      if (err) throw err;
+
+      results.forEach(reservation => {
+          db.query('UPDATE tables SET status = "available" WHERE id = ?', [reservation.table_id], (err, result) => {
+              if (err) throw err;
+
+              db.query('DELETE FROM reservations WHERE id = ?', [reservation.id], (err, result) => {
+                  if (err) throw err;
+              });
+          });
+      });
+  });
+};
+
 exports.makeReservation = (req, res) => {
   const { table_id, reservation_date } = req.body;
   const user_id = req.userId;
@@ -10,6 +28,8 @@ exports.makeReservation = (req, res) => {
   if (selectedDate < currentDate) {
       return res.status(400).send('Cannot make a reservation for a past date');
   }
+
+  exports.checkAndCancelPastReservations();
 
   db.query('SELECT * FROM reservations WHERE user_id = ?', [user_id], (err, results) => {
       if (err) throw err;
@@ -37,15 +57,23 @@ exports.makeReservation = (req, res) => {
   });
 };
 
-
 exports.getUserReservations = (req, res) => {
   const user_id = req.userId;
+  const currentDate = new Date();
 
   db.query('SELECT * FROM reservations WHERE user_id = ?', [user_id], (err, results) => {
-    if (err) throw err;
-    res.status(200).send(results);
+      if (err) throw err;
+
+      results.forEach(reservation => {
+          if (new Date(reservation.reservation_date) < currentDate) {
+              reservation.status = 'past';
+          }
+      });
+
+      res.status(200).send(results);
   });
 };
+
 
 exports.getAllReservations = (req, res) => {
   if (req.userRole !== 'admin') {
